@@ -14,27 +14,11 @@ function EditDogForm({ dogs, dog = {}, setDogs }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await fetch(`${process.env.REACT_APP_API_URL}/dogs/${dog.id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      },
-      body: JSON.stringify({
-        name,
-        age,
-        breed,
-        image_url
-      })
-    });
-
-    const parsedBody = await res.json();
-    setDogs(dogs.map(dog => dog.id === parseInt(id) ? parsedBody : dog));
-    history.push('/dogs');
+    
   };
   return (
     <>
-      <h1 className="text-3xl mb-3">New Dog</h1>
+      <h1 className="text-3xl mb-3">Edit Dog</h1>
       <form
         onSubmit={handleSubmit}
         className="text-2xl flex-col space-y-8 items-center"

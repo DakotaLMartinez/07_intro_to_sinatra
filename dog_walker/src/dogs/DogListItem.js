@@ -9,14 +9,7 @@ function DogListItem({
 }) {
   const handleDelete = async (e) => {
     e.preventDefault();
-    const res = await fetch(`${process.env.REACT_APP_API_URL}/dogs/${id}`, {
-      method: 'DELETE',
-      headers: { Accept: 'application/json' }
-    });
-
-    const parsedBody = await res.json();
-
-    setDogs(dogs.filter((dog) => dog.id !== parsedBody.id));
+    
   };
 
   return (

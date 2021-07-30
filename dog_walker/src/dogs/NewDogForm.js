@@ -13,23 +13,6 @@ function NewDogForm({ dogs, setDogs }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await fetch(`${process.env.REACT_APP_API_URL}/dogs`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      },
-      body: JSON.stringify({
-        name,
-        age,
-        breed,
-        image_url
-      })
-    });
-
-    const parsedBody = await res.json();
-    setDogs([...dogs, parsedBody]);
-    history.push('/dogs');
   };
   return (
     <>
