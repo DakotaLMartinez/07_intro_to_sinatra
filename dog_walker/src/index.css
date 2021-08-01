@@ -1,4 +1,14 @@
 /* ./src/index.css */
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; */
+
+.h-144  {
+  height: '36rem';
+}
+
+@media (max-width: 1023px) { 
+  .lg:h-144  {
+    height: '36rem';
+  }
+}
