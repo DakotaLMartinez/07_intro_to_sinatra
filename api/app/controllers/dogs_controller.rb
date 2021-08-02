@@ -3,6 +3,11 @@ class DogsController < ApplicationController
     Dog.all.to_json
   end
 
+  get "/dogs/:id" do 
+    dog = Dog.find(params[:id])
+    dog.to_json(include: {dog_walks: {methods: [:formatted_time]}})
+  end
+
   post "/dogs" do 
     dog = Dog.create(dog_params)
     puts dog_params.inspect

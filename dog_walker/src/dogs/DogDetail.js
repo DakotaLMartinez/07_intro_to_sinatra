@@ -1,20 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaPencilAlt, FaTrash, FaWalking, FaPoop } from 'react-icons/fa';
 
 function DogDetail({ dog = {}, dogs, setDogs }) {
   const { id, name, age, breed, image_url } = dog;
 
-  const [dog_walks, set_dog_walks] = useState([
-    {
-      time: "Friday, 7/30 2:00 PM",
-      number_two: false
-    },
-    {
-      time: "Thursday, 7/29 9:00 AM",
-      number_two: true
+  const [dog_walks, set_dog_walks] = useState([]);
+
+  useEffect(() => {
+    async function fetchDogWalks() {
+      if (!id) return;
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/dogs/${id}`);
+      const { dog_walks } = await res.json();
+
+      set_dog_walks(dog_walks);
     }
-  ]);
+    fetchDogWalks();
+  }, [id]);
 
   const handleDelete = async (e) => {
     e.preventDefault();
@@ -26,6 +28,33 @@ function DogDetail({ dog = {}, dogs, setDogs }) {
     const parsedBody = await res.json();
 
     setDogs(dogs.filter((dog) => dog.id !== parsedBody.id));
+  };
+
+  const handlePooClick = async (dogWalkId) => {
+    const dog_walk = dog_walks.find((dw) => dw.id === dogWalkId);
+    togglePoo(dog_walk)
+    const res = await fetch(
+      `${process.env.REACT_APP_API_URL}/dog_walks/${dogWalkId}`,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          number_two: !dog_walk.number_two
+        })
+      }
+    );
+    // if something is wrong with the response, display an error to our users.
+  };
+
+  const togglePoo = (dw) => {
+    const updated_dog_walks = dog_walks.map((dog_walk) => {
+      if (dog_walk.id === parseInt(dw.id)) {
+        return { ...dog_walk, number_two: !dw.number_two };
+      } else {
+        return dog_walk;
+      }
+    });
+    set_dog_walks(updated_dog_walks);
   };
 
   return (
@@ -63,12 +92,14 @@ function DogDetail({ dog = {}, dogs, setDogs }) {
         <ul className="space-y-4">
           {dog_walks.map((dog_walk) => (
             <li className="flex items-bottom justify-between border-b-2 py-2">
-              <span className="pb-1 pt-2 w-44">{dog_walk.time}</span>
+              <span className="pb-1 pt-2 w-52">{dog_walk.formatted_time}</span>
               <span className="flex items-center">
-                <FaPoop
-                  style={{ color: dog_walk.number_two ? '#000' : '#bbb' }}
-                  size={20}
-                />
+                <button onClick={() => handlePooClick(dog_walk.id)}>
+                  <FaPoop
+                    style={{ color: dog_walk.number_two ? '#000' : '#bbb' }}
+                    size={20}
+                  />
+                </button>
               </span>
               <span className="flex items-center">
                 <FaTrash size={20} />
